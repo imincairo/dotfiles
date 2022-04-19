@@ -1,0 +1,342 @@
+mp_precmd () {
+	mp_update
+	#print ""
+}
+
+mp_update () {
+	update_vim_mode
+	update_info
+	update_dir
+	update_pad
+}
+
+mp_preexec () {
+	print ""
+}
+
+mp_reset_prompt () {
+    if [[ $CONTEXT == cont ]]; then
+		# When the context is "cont", PS2 is active and calling
+		# reset-prompt will have no effect on PS1, but it will
+		# reset the execution context (%_) of PS2 which we don't
+		# want. Unfortunately, we can't save the output of "%_"
+		# either because it is only ever rendered as part of the
+		# prompt, expanding in-place won't work.
+		return
+	fi
+
+	zle && zle .reset-prompt
+}
+
+update_vim_mode() {
+	case $KEYMAP in
+		(vicmd)
+			prompt_params[vim_mode]='CMD'
+			prompt_params[vim_mode_icon]=
+			prompt_params[vim_mode_bg_color]=$prompt_colors[yellow];;
+		(main|viins)
+			prompt_params[vim_mode]='INSERT'
+			prompt_params[vim_mode_icon]=
+			prompt_params[vim_mode_bg_color]=$prompt_colors[green];;
+		(*)
+			prompt_params[vim_mode]='ERROR'
+			prompt_params[vm_icon]=
+			prompt_params[vm_bg_color]=$prompt_colors[red];;
+	esac
+
+	prompt_params[vim_mode_fg_color]=$prompt_colors[base03]
+	
+	build_vim_mode_str
+}
+
+build_vim_mode_str () {
+	local tvms=''
+	tvms+=%K{$prompt_params[vim_mode_fg_color]}
+	tvms+=%F{$prompt_params[vim_mode_bg_color]}
+	tvms+=$prompt_glyphs[rounded_l]$f$k
+	tvms+=%K{$prompt_params[vim_mode_bg_color]}
+	tvms+=%F{$prompt_params[vim_mode_fg_color]}
+	tvms+=%B$prompt_params[vim_mode]%b%f%k
+	tvms+=%K{$prompt_params[vim_mode_fg_color]}
+	tvms+=%F{$prompt_params[vim_mode_bg_color]}
+	tvms+=$prompt_glyphs[rounded_r]%f%k
+
+	prompt_params[vim_mode_str]=$tvms
+
+	mp_reset_prompt
+}
+
+update_dir () {
+	if [[ !$1 ]]
+	then
+		build_dir_arr
+	fi
+	build_dir_str
+}
+
+build_dir_arr () {
+	local expanded_pwd=''
+	#prompt expansion and set to var
+	print -D -P -v expanded_pwd $PWD
+	#split dir str to arr
+	dir_array=(${(s:/:)expanded_pwd}) 
+}
+
+build_dir_str () {
+	local dir_count=${#dir_array[@]}
+	local tds=%K{$prompt_colors[$dir_str_colors[1]]}
+	tds+=%F{$prompt_params[dir_text_color]}
+	tds+=$sp$sp%f%k
+	local j=1  #index for dir_array_size
+	prompt_params[dir_colors_index]=1 #reset dir_colors_index
+	for dir in $dir_array
+	do
+		get_and_update_dir_colors
+		local bg_color=$prompt_params[dir_bg_color]
+		local fg_color=$prompt_params[dir_text_color]
+		local next_bg_color=$prompt_params[dir_next_bg_color]
+		if (( $j == $dir_count ))
+		then
+			next_bg_color=$prompt_colors[base03]
+		fi
+		tds+=%K{$bg_color}%F{$fg_color]}%B
+		tds+=$dir%f%k
+		tds+=%K{$next_bg_color}%F{$bg_color}
+		tds+=$prompt_glyphs[triangle_tl]%f%k%b
+
+		(( j+=1 ))
+	done
+	prompt_params[dir_str]=$tds
+}
+
+get_and_update_dir_colors () {
+	local index=$prompt_params[dir_colors_index]
+	local next_index=1
+
+	if (( $index < ${#dir_str_colors[@]} ))
+	then
+		next_index=$(( $index + 1 ))
+	fi
+
+	prompt_params[dir_bg_color]=${prompt_colors[${dir_str_colors[$index]}]}
+	prompt_params[dir_next_bg_color]=${prompt_colors[${dir_str_colors[$next_index]}]}
+	prompt_params[dir_text_color]=${prompt_colors[base03]}
+	
+	prompt_params[dir_colors_index]=$next_index
+}
+
+truncate_dirs () {
+	local to_truncate=$(( $1 * -1 ))
+	local i=2
+	while (( $i <= ${#dir_array[@]} )) 
+	do
+		local dir=$dir_array[i]
+		local dir_len=${#dir}
+		if (( $dir_len > 3 ))
+		then
+			print -P -v dir '%3>>$dir%>>'
+			(( to_truncate-=(( $dir_len - 3 )) ))
+			dir_array[$i]=$dir
+			if (( $to_truncate < -4 ))
+			then
+				break
+			fi
+		fi
+		(( i += 1 ))
+	done
+}
+
+update_info () {
+	build_info_str
+}
+
+build_info_str () {
+	#echo "build_info_str"
+	local tis=''
+	tis+=%F{%(?.$prompt_colors[blue].$prompt_colors[red])}
+	tis+=$prompt_glyphs[triangle_br]%f
+	tis+=%K{%(?.$prompt_colors[blue].$prompt_colors[red])}
+	tis+=%F{$prompt_colors[base03]}%B$sp
+	tis+=${VIRTUAL_ENV:+$(venv_str)$sp}
+	#tis+=-$prompt_expansions[user_name]$sp
+	#tis+=$prompt_expansions[host_name_s]$sp
+	tis+=$prompt_expansions[shell_level]$sp
+	tis+=%T$sp
+	tis+=%(#..)$sp
+	tis+=%b%f%k
+	prompt_params[info_str]=$tis
+}
+
+venv_str () {
+	local tvs=(${(s:/:)VIRTUAL_ENV})
+	echo ''${tvs[-2]}
+}
+
+update_pad () {
+	build_pad_str $prompt_params[dir_str] $prompt_params[info_str]
+}
+
+build_pad_str () {
+    local str_1=$1
+    local str_2=$2
+
+	local str_1_len=$(prompt_length $str_1)
+	local str_2_len=$(prompt_length $str_2)
+	local term_len=$COLUMNS
+
+	local pad_len=$(( term_len - str_1_len - str_2_len ))
+
+	if (( $pad_len <= 0 ))
+	then
+		truncate_dirs $pad_len
+		build_dir_str
+		update_pad
+		return
+	fi
+
+	local padding=${(l:$pad_len::-:)}
+
+	prompt_params[pad_str]=%F{$prompt_colors[base01]}
+	prompt_params[pad_str]+=$padding
+	prompt_params[pad_str]+=%f
+}
+
+prompt_length () {
+    local -i x y=${#1} m
+    if (( y )); then
+        while (( ${${(%):-$1%$y(l.1.0)}[-1]} )); do
+            x=y
+            (( y *= 2 ))
+        done
+        while (( y > x + 1 )); do
+            (( m = x + (y - x) / 2 ))
+            (( ${${(%):-$1%$m(l.x.y)}[-1]} = m ))
+        done
+    fi
+    echo $x
+}
+
+TRAPWINCH () {
+	#/TODO add a delay to prevent crazy printing
+	#echo "resized"
+	#mp_update
+}
+
+pm_state_setup () {
+    typeset -gA prompt_colors
+    prompt_colors=(
+        [base03]=#002b36
+        [base02]=#073642
+        [base01]=#585858
+        [base00]=#626262
+        [base0]=#808080
+        [base1]=#8a8a8a
+        [base2]=#e4e4e4
+        [base3]=#ffffd7
+        [yellow]=#af8700
+        [orange]=#d75f00
+        [red]=#af0000
+        [magenta]=#af005f
+        [violet]=#5f5faf
+        [blue]=#0087ff
+        [cyan]=#00afaf
+        [green]=#5f8700
+    )
+
+    typeset -gA dir_str_colors
+    dir_str_colors=(
+        [6]=yellow
+        [5]=orange
+        [4]=red
+        [3]=magenta
+        [2]=violet
+        [1]=blue
+        [8]=cyan
+        [7]=green
+    )
+
+    sp=' '
+
+    typeset -gA prompt_glyphs
+    prompt_glyphs=(
+        [triangle_r]=$'\UE0B0'
+        [triangle_l]=$'\UE0B2'
+        [arrow_r]=$'\UE0B1'
+        [arrow_l]=$'\UE0B3'
+        [rounded_r]=$'\UE0B4'
+        [rounded_l]=$'\UE0B6'
+        [crescent_r]=$'\UE0B5'
+        [crescent_l]=$'\UE0B7'
+        [triangle_bl]=$'\UE0B8'
+        [triangle_br]=$'\UE0BA'
+        [triangle_tl]=$'\UE0BC'
+        [triangle_tr]=$'\UE0BE'
+        [fins_r]=$'\UE0D2'
+        [fins_l]=$'\UE0D4'
+        [matrix_r]=$'\UE0C4'
+        [matrix_l]=$'\UE0C5'
+        [honeycomb]=$'\UE0CC'
+        [folder]=$'\Ufc6e'
+        [forward_slash]=$'\UE0BD'
+        [back_slash]=$'\UE0BF'
+    )
+
+    typeset -gA prompt_expansions
+        prompt_expansions=(
+        [host_name_s]=%m
+        [host_name_l]=%M
+        [user_name]=%n
+        [privileged]=%#
+        [last_cmd_status]=%?
+        [cwd]=%~
+        [shell_level]=%L
+        [exe_name]=%N #%x
+    )
+
+    typeset -gA prompt_params
+
+	typeset -ga dir_array
+}
+
+prompt_mike_setup () {
+    setopt PROMPT_SUBST
+    ZLE_RPROMPT_INDENT=0
+    export KEYTIMEOUT=1
+	export VIRTUAL_ENV_DISABLE_PROMPT=true
+    
+    autoload -Uz add-zsh-hook add-zle-hook-widget
+    add-zsh-hook precmd mp_precmd
+    add-zsh-hook preexec mp_preexec
+    add-zsh-hook chpwd update_dir
+
+    pm_state_setup
+
+    zle -N update_vim_mode
+
+    add-zle-hook-widget zle-keymap-select update_vim_mode
+    add-zle-hook-widget zle-line-init update_vim_mode
+
+	#top line
+	#top left
+    PS1='$prompt_params[dir_str]'
+	#padding
+    PS1+='$prompt_params[pad_str]'
+	#top right
+    PS1+='$prompt_params[info_str]'$'\n'
+
+	#bottom left
+	PS1+='%K{$prompt_params[vim_mode_fg_color]'
+	PS1+='%F{$prompt_params[vim_mode_bg_color]'
+	PS1+='$prompt_glyphs[rounded_l]%f%k'
+	PS1+='%K{$prompt_params[vim_mode_bg_color]'
+	PS1+='%F{$prompt_params[vim_mode_fg_color]'
+	PS1+='$prompt_params[vim_mode_icon]%f%k'
+	PS1+='%K{$prompt_params[vim_mode_fg_color]'
+	PS1+='%F{$prompt_params[vim_mode_bg_color]'
+	PS1+='$prompt_glyphs[triangle_r]%f%k'
+
+	#bottom right
+    RPS1='$prompt_params[vim_mode_str]'
+}
+
+prompt_mike_setup "$0"
