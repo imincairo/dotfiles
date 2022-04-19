@@ -67,6 +67,8 @@ alias -g sd='sudo '
 alias pcm='pacman'
 #alias pac-s='pacman -S'
 #alias p-s='pacman -S'
+## DOTFILES GIT ALIAS
+alias config='/usr/bin/git --git-dir=$XDG_ROOT_HOME/.dotfiles/ --work-tree=$XDG_ROOT_HOME'
 
 # Named Dirs
 # c=/home/mike/.config

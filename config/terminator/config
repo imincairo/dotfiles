@@ -1,0 +1,76 @@
+[global_config]
+  geometry_hinting = True
+  title_hide_sizetext = True
+  title_transmit_bg_color = "#c64600"
+  title_use_system_font = False
+  title_font = Hasklug Nerd Font Mono Medium 10
+[keybindings]
+  zoom_in = ""
+  zoom_out = ""
+  zoom_normal = ""
+  new_tab = ""
+  cycle_next = ""
+  cycle_prev = ""
+  go_next = ""
+  go_prev = ""
+  go_up = ""
+  go_down = ""
+  go_left = ""
+  go_right = ""
+  rotate_cw = ""
+  rotate_ccw = ""
+  split_horiz = <Shift><Alt>j
+  split_vert = <Shift><Alt>l
+  close_term = <Shift><Alt>c
+  copy = ""
+  paste = ""
+  toggle_scrollbar = ""
+  search = ""
+  close_window = ""
+  resize_up = ""
+  resize_down = ""
+  resize_left = ""
+  resize_right = ""
+  move_tab_right = ""
+  move_tab_left = ""
+  toggle_zoom = ""
+  scaled_zoom = ""
+  next_tab = ""
+  prev_tab = ""
+  full_screen = ""
+  reset = ""
+  reset_clear = ""
+  hide_window = ""
+  group_all = ""
+  ungroup_all = ""
+  group_tab = ""
+  ungroup_tab = ""
+  new_window = ""
+  new_terminator = ""
+  insert_number = ""
+  insert_padded = ""
+  edit_window_title = ""
+  edit_tab_title = ""
+  edit_terminal_title = ""
+  layout_launcher = ""
+  help = ""
+[profiles]
+  [[default]]
+    background_color = "#061b1d"
+    background_darkness = 0.85
+    background_type = transparent
+    cursor_color = "#aaaaaa"
+    font = Hasklug Nerd Font Mono Medium 16
+    foreground_color = "#839496"
+    scrollback_infinite = True
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#002b36:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
+    use_system_font = False
+[layouts]
+  [[default]]
+    [[[window0]]]
+      type = Window
+      parent = ""
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+[plugins]
