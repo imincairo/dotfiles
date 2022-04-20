@@ -20,6 +20,18 @@ require('packer').startup(function(use)
   --snippet
   use 'hrsh7th/cmp-vsnip'
   use 'hrsh7th/vim-vsnip'
+
+  --colorschemes
+  --use 'shaunsingh/solarized.nvim' -- only light mode
+  use 'ishan9299/nvim-solarized-lua' -- bright???
+  --use 'ful1e5/onedark.nvim'
+
+  --lualine
+  use {
+    'nvim-lualine/lualine.nvim',
+    requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+  }
+
   vim.opt.completeopt = { "menu", "menuone", "noselect" }
 end)
 
