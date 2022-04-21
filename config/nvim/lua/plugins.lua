@@ -32,6 +32,13 @@ require('packer').startup(function(use)
     requires = { 'kyazdani42/nvim-web-devicons', opt = true }
   }
 
+    --gitgutter
+    use 'airblade/vim-gitgutter'
+    --fugitive
+    use 'tpope/vim-fugitive'
+
+
+
   vim.opt.completeopt = { "menu", "menuone", "noselect" }
 end)
 

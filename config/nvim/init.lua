@@ -1,25 +1,34 @@
+--import plugins
 require("plugins")
-
+--tab stuff
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
 vim.opt.expandtab = true
-
---require('onedark').setup()
+vim.opt.filetype.indent = true
+--screen suff
+vim.opt.scrolloff = 2
+vim.opt.number = true
+vim.opt.numberwidth = 3
+    --crosshair highlighting
+vim.wo.cursorline = true
+--vim.wo.cursorcolumn = true
+--vim.opt.foldmethod = 'indent'
+--colors
 vim.cmd('colorscheme solarized')
+vim.opt.background = 'dark'
 vim.opt.termguicolors = true
 vim.g.solarized_italics = 1
 vim.g.solarized_visibility = 'normal'
 vim.g.solarized_diffmode = 'normal'
--- To enable transparency
+    --To enable transparency
 if vim.fn.has('gui_running') == 0 then
     vim.g.solarized_termtrans = 0
 else
     vim.g.solarized_termtrans = 1
 end
 vim.g.solarized_statusline = 'normal'
---vim.o.background = 'dark'
-
+--status line
 require('lualine').setup {
   options = {
     icons_enabled = true,
