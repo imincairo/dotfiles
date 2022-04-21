@@ -130,6 +130,46 @@ end
 local nvim_lsp = require('lspconfig')
 
 -- setup languages
+-- html
+nvim_lsp['html'].setup{
+    cmd = {'vscode-html-language-server', '--stdio'},
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {},
+    init_options = {
+        configurationSection = { "html", "css", "javascript" },
+        embeddedLanguages = {
+            css = true,
+            javascript = true
+        },
+        provideFormatter = true
+    }
+}
+-- css, scss, less
+nvim_lsp['cssls'].setup{
+    cmd = {'vscode-css-language-server', '--stdio'},
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {
+        css = {
+            validate = true
+        },
+        less = {
+            validate = true
+        },
+            scss = {
+                validate = true
+            }
+        }
+}
+-- typescript
+nvim_lsp['tsserver'].setup{
+    cmd = {'typescript-language-server', '--stdio'},
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {
+    }
+}
 -- GoLang
 nvim_lsp['gopls'].setup{
   cmd = {'gopls'},
