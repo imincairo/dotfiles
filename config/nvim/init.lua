@@ -1,10 +1,12 @@
 --import plugins
 require("plugins")
 --tab stuff
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.softtabstop = 4
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.softtabstop = 2
 vim.opt.expandtab = true
+
+vim.opt.autoindent = true
 vim.opt.filetype.indent = true
 --screen suff
 vim.opt.scrolloff = 2
@@ -61,7 +63,7 @@ require('lualine').setup {
 
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "javascript", "python", "c", "lua", "rust" },
+  ensure_installed = { "javascript", "python", "css", "lua", "rust" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -85,9 +87,9 @@ require'nvim-treesitter.configs'.setup {
     },
   },
 
-  require'nvim-treesitter.configs'.setup {
-    indent = {
-      enable = true
-    }
-  },
+  -- require'nvim-treesitter.configs'.setup {
+  --   indent = {
+  --     enable = true
+  --   }
+  -- },
 }

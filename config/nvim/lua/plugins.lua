@@ -145,9 +145,10 @@ nvim_lsp['html'].setup{
         provideFormatter = true
     }
 }
--- css, scss, less
+-- css, scss, less, sass
 nvim_lsp['cssls'].setup{
     cmd = {'vscode-css-language-server', '--stdio'},
+    filetypes = {'css', 'scss', 'less', 'sass'},
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
