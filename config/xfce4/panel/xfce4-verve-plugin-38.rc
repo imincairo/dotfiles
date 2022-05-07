@@ -1,0 +1,16 @@
+size=49
+label=
+history-length=25
+use-url=true
+use-email=false
+use-dir=true
+use-wordexp=true
+use-bang=false
+use-backslash=false
+use-smartbookmark=false
+use-shell=true
+smartbookmark-url=
+foreground-color=rgb(255,120,0)
+background-color=
+base-color=rgb(2,34,42)
+

@@ -1,4 +1,8 @@
-bindkey -v
+#bindkey -v
+
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+        source /etc/profile.d/vte.sh
+fi
 
 # DIRCOLORS
 d=/home/mike/XDG-DIRS/config/dircolors
@@ -30,7 +34,7 @@ setopt noglobdots
 setopt noshwordsplit
 setopt unset
 
-export PAGER=${PAGER:-less}
+export PAGER=${PAGER:-most}
 
 # support colors in less
 export LESS_TERMCAP_mb=$'\E[01;31m'
@@ -152,15 +156,6 @@ zstyle ':completion:*:urls' local 'www' '/var/www/' 'public_html'
 
 
 
-
-
-
-
-
-
-
-
-
 fpath+=/home/mike/XDG-DIRS/config/zsh/zsh_functions
 fpath+=/home/mike/XDG-DIRS/config/zsh/zprompts
 autoload -U promptinit
@@ -168,14 +163,15 @@ promptinit
 prompt_mike_setup
 
 # Aliases
-alias ls="ls --color=always --group-directories-first --indicator-style=slash"
-alias la="ls -A --color=always --group-directories-first --indicator-style=slash"
+#alias ls="ls --color=always --group-directories-first --indicator-style=slash"
+#alias la="ls -A --color=always --group-directories-first --indicator-style=slash"
+alias ls="exa -a --color=always --icons --group-directories-first"
 alias grep="grep --color=auto"
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
-alias vv='nvim'
+alias nv='nvim'
 alias cl='clear'
 #alias venv_start='source ./VENV/bin/activate'
 ## DOTFILES GIT ALIAS
