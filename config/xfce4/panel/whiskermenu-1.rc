@@ -1,5 +1,5 @@
 favorites=thunar-volman-settings.desktop,piavpn.desktop,deluge.desktop,nvim.desktop,kitty.desktop,redshift-gtk.desktop,systemadm.desktop,vlc.desktop,xfce4-file-manager.desktop,vivaldi-stable.desktop
-recent=org.inkscape.Inkscape.desktop,xfce4-settings-editor.desktop,xfce4-clipman-settings.desktop,deluge.desktop,org.pipewire.Helvum.desktop,xfce-wm-settings.desktop,xfce4-sensors.desktop,systemadm.desktop,xfce4-about.desktop,xfce-settings-manager.desktop,piavpn.desktop,xfce4-power-manager-settings.desktop,xfce-wmtweaks-settings.desktop,xfce-keyboard-settings.desktop,redshift-gtk.desktop
+recent=org.gnome.FontManager.desktop,ca.desrt.dconf-editor.desktop,nvim.desktop,org.inkscape.Inkscape.desktop,xfce4-settings-editor.desktop,xfce4-clipman-settings.desktop,deluge.desktop,org.pipewire.Helvum.desktop,xfce-wm-settings.desktop,xfce4-sensors.desktop,systemadm.desktop,xfce4-about.desktop,xfce-settings-manager.desktop,piavpn.desktop,xfce4-power-manager-settings.desktop,xfce-wmtweaks-settings.desktop,xfce-keyboard-settings.desktop,redshift-gtk.desktop
 button-title=TARDIS
 button-icon=applications-system
 button-single-row=false

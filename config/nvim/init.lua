@@ -5,17 +5,19 @@ vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.softtabstop = 2
 vim.opt.expandtab = true
+--fold stuff
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr="nvim_treesitter#foldexpr()"
 
-vim.opt.autoindent = true
-vim.opt.filetype.indent = true
+--vim.opt.autoindent = true
+--vim.opt.filetype.indent = true
 --screen suff
 vim.opt.scrolloff = 2
 vim.opt.number = true
 vim.opt.numberwidth = 3
-    --crosshair highlighting
+--crosshair highlighting
 vim.wo.cursorline = true
---vim.wo.cursorcolumn = true
---vim.opt.foldmethod = 'indent'
+---vim.wo.cursorcolumn = true
 --colors
 vim.cmd('colorscheme solarized')
 vim.opt.background = 'dark'
@@ -23,7 +25,7 @@ vim.opt.termguicolors = true
 vim.g.solarized_italics = 1
 vim.g.solarized_visibility = 'normal'
 vim.g.solarized_diffmode = 'normal'
-    --To enable transparency
+ --To enable transparency
 if vim.fn.has('gui_running') == 0 then
     vim.g.solarized_termtrans = 0
 else
@@ -34,7 +36,7 @@ vim.g.solarized_statusline = 'normal'
 require('lualine').setup {
   options = {
     icons_enabled = true,
-    theme = 'auto',
+    theme = 'codedark', --solarized_dark, powerline_dark
     component_separators = { left = '', right = ''},
     section_separators = { left = '', right = ''},
     disabled_filetypes = {},
@@ -63,7 +65,8 @@ require('lualine').setup {
 
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "javascript", "python", "css", "lua", "rust" },
+  --"javascript", "python", "css", "lua", "rust" },
+  ensure_installed = "all",
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
